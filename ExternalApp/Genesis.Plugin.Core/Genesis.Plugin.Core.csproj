@@ -6,10 +6,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
+    <ProjectReference Include="..\Genesis.Plugin.Core.Attributes\Genesis.Plugin.Core.Attributes.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Publish\Plugins /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Publish\Plugins /Y" />
+    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Publish\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Publish\Plugins\ /Y" />
   </Target>
 
 </Project>
