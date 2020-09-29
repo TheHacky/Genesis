@@ -23,34 +23,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-
-namespace JCMG.Genesis.Editor
+namespace Genesis.Plugin
 {
-	public class ObjectPool<T>
+	/// <summary>
+	/// Represents an object that can generate zero or more <see cref="CodeGenFile"/> instances based on a subset of
+	/// <see cref="CodeGeneratorData"/> instances.
+	/// </summary>
+	public interface ICodeGenerator : ICodeGenerationPlugin
 	{
-		private readonly Func<T> _factoryMethod;
-		private readonly Stack<T> _objectPool;
-		private readonly Action<T> _resetMethod;
-
-		public ObjectPool(Func<T> factoryMethod, Action<T> resetMethod = null)
-		{
-			_factoryMethod = factoryMethod;
-			_resetMethod = resetMethod;
-			_objectPool = new Stack<T>();
-		}
-
-		public T Get()
-		{
-			return _objectPool.Count != 0 ? _objectPool.Pop() : _factoryMethod();
-		}
-
-		public void Push(T obj)
-		{
-			_resetMethod?.Invoke(obj);
-
-			_objectPool.Push(obj);
-		}
+		CodeGenFile[] Generate(CodeGeneratorData[] data);
 	}
 }

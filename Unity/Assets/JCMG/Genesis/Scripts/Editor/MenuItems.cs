@@ -36,7 +36,7 @@ namespace JCMG.Genesis.Editor
 	internal static class MenuItems
 	{
 		// Menu item paths
-		private const string GENERATE_CODE_MENU_ITEM = "Tools/JCMG/Genesis/Generate Code #%g";
+		private const string GENERATE_CODE_MENU_ITEM = "Tools/JCMG/Genesis/Generate CLI Code #%g";
 		private const string BUG_OR_FEATURE_REQUEST_MENU_ITEM = "Tools/JCMG/Genesis/Submit bug or feature request";
 		private const string CHECK_FOR_UPDATES_MENU_ITEM = "Tools/JCMG/Genesis/Check for Updates...";
 		private const string DOCUMENTATION_MENU_ITEM = "Tools/JCMG/Genesis/Documentation...";
@@ -66,10 +66,15 @@ namespace JCMG.Genesis.Editor
 
 		#region Window Menu Items
 
-		[MenuItem(GENERATE_CODE_MENU_ITEM, priority = GENERATE_CODE_PRIORITY)]
 		internal static void ExecuteGenesisCodeGeneration()
 		{
 			UnityCodeGenerator.GenerateAll();
+		}
+
+		[MenuItem(GENERATE_CODE_MENU_ITEM, priority = GENERATE_CODE_PRIORITY)]
+		public static void RunCodeGeneration()
+		{
+			GenesisCLIRunner.Run();
 		}
 
 		[MenuItem(BUG_OR_FEATURE_REQUEST_MENU_ITEM, priority = BUG_OR_FEATURE_REQUEST_PRIORITY)]

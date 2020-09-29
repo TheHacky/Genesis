@@ -42,6 +42,7 @@ namespace JCMG.Genesis.Editor
 		public const string CODE_GENERATION_UPDATE_ERROR = LOG_PREFIX + "An unexpected error occured during code generation.";
 		public const string CODE_GENERATION_UPDATE_ERROR_FORMAT =
 			LOG_PREFIX + "An unexpected error occured during code generation for GenesisSettings asset [{0}].";
+		public const string DOTNET_COMMAND_EXECUTION_FORMAT = LOG_PREFIX + "{0} {1}";
 
 		public const string COULD_NOT_FIND_DEFAULT_SETTINGS_SET =
 			"A single default Settings could not be found. Please update your GenesisSettings asset to mark one " +
@@ -54,7 +55,6 @@ namespace JCMG.Genesis.Editor
 		// Dotnet Core and Genesis Assemblies
 		public const string DOTNET_EXE = "dotnet";
 		public const string GENESIS_EXE = "Genesis.CLI.dll";
-		public const string GENESIS_SHARED_ASSEMBLY_NAME = "Genesis.Attributes";
 
 		// General file and path
 		public const string DLL_EXTENSION = ".dll";

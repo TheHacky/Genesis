@@ -23,54 +23,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-
-namespace JCMG.Genesis.Editor
+namespace Genesis.Plugin
 {
-	public class ObjectCache
+	/// <summary>
+	/// Represents a code-generated file.
+	/// </summary>
+	public sealed class CodeGenFile
 	{
-		private readonly Dictionary<Type, object> _objectPools;
+		public string GeneratorName { get; set; }
 
-		public ObjectCache()
+		public string FileName { get; set; }
+
+		public string FileContent { get; set; }
+
+		public CodeGenFile(string fileName, string fileContent, string generatorName)
 		{
-			_objectPools = new Dictionary<Type, object>();
-		}
-
-		public ObjectPool<T> GetObjectPool<T>()
-			where T : new()
-		{
-			var key = typeof(T);
-			object obj;
-			if (!_objectPools.TryGetValue(key, out obj))
-			{
-				obj = new ObjectPool<T>(() => new T());
-				_objectPools.Add(key, obj);
-			}
-
-			return (ObjectPool<T>)obj;
-		}
-
-		public T Get<T>()
-			where T : new()
-		{
-			return GetObjectPool<T>().Get();
-		}
-
-		public void Push<T>(T obj)
-			where T : new()
-		{
-			GetObjectPool<T>().Push(obj);
-		}
-
-		public void RegisterCustomObjectPool<T>(ObjectPool<T> objectPool)
-		{
-			_objectPools.Add(typeof(T), objectPool);
-		}
-
-		public void Reset()
-		{
-			_objectPools.Clear();
+			FileName = fileName;
+			FileContent = fileContent;
+			GeneratorName = generatorName;
 		}
 	}
 }
