@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genesis.Plugin.Core", "..\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genesis.Plugin.Core.Attributes", "..\Genesis.Plugin.Core.Attributes\Genesis.Plugin.Core.Attributes.csproj", "{1BE59783-AB0D-4E0E-AED9-714B37A6A724}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Standalone", "Standalone", "{A671F5AA-96EB-4BE0-B658-FB06B5D845F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unity", "Unity", "{A62EACFC-25E0-446D-914F-C80AD393D834}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AB61F62D-9AED-4238-A2A1-D43D2C7A27EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +42,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2737CA8B-0BB7-49E9-8C09-F4DA871EBA97} = {A671F5AA-96EB-4BE0-B658-FB06B5D845F7}
+		{47F5E354-5B89-4078-8FB3-8262A51D34FD} = {AB61F62D-9AED-4238-A2A1-D43D2C7A27EB}
+		{6BB762A8-2C44-4263-9EF2-64F1CC1C862D} = {AB61F62D-9AED-4238-A2A1-D43D2C7A27EB}
+		{1BE59783-AB0D-4E0E-AED9-714B37A6A724} = {A62EACFC-25E0-446D-914F-C80AD393D834}
+		{AB61F62D-9AED-4238-A2A1-D43D2C7A27EB} = {A671F5AA-96EB-4BE0-B658-FB06B5D845F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8EBDC0A-C044-414B-964B-D4F282392792}
