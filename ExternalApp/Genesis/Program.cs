@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using CommandLine;
+using Genesis.Common;
 using Genesis.Plugin;
 using Serilog;
 
@@ -14,23 +17,87 @@ namespace Genesis.CLI
 		{
 			ConfigureLogger(isVerbose: true);
 
-			return Parser.Default.ParseArguments<DefaultOptions>(args: args)
+			return Parser.Default.ParseArguments<GenerateOptions, ConfigOptions>(args: args)
 				.MapResult(
-					parsedFunc: ExecuteCodeGeneration,
+					(ConfigOptions configOptions) => HandleConfigOptions(configOptions),
+					(GenerateOptions generateOptions) => ExecuteCodeGeneration(generateOptions),
 					notParsedFunc: errs => HandleErrors(errs));
 		}
 
-		private static int ExecuteCodeGeneration(DefaultOptions defaultOptions)
+		private static int HandleConfigOptions(ConfigOptions configOptions)
 		{
 			var result = 0;
 			try
 			{
-				ConfigureLogger(isVerbose: defaultOptions.IsVerbose);
+				ConfigureLogger(isVerbose: configOptions.IsVerbose);
+
+				if (configOptions.DoCreate)
+				{
+					// Create config and populate it with all sub-configs
+					var genesisConfig = new GenesisConfig();
+
+					using (var assemblyLoader = new AssemblyLoader(configOptions.PluginPath))
+					{
+						assemblyLoader.LoadAll(configOptions.PluginPath);
+
+						_logger.Verbose($"Loaded {assemblyLoader.Count} plugins assemblies.");
+
+						var codeGenerationPluginCache = new TypeCache();
+						codeGenerationPluginCache.AddTypeWithInterface<object, ICodeGenerationPlugin>();
+
+						foreach (var type in codeGenerationPluginCache)
+						{
+							_logger.Verbose($"Plugin loaded: {type.Name}");
+						}
+
+						// Get all configs and populate with default settings
+						var allConfigs = ReflectionTools.GetAllDerivedInstancesOfType<AbstractConfigurableConfig>();
+						foreach (var config in allConfigs)
+						{
+							config.Configure(genesisConfig);
+						}
+
+						// Populate with all plugins and search paths
+						var allPluginInstances = codeGenerationPluginCache
+							.Select(x => Activator.CreateInstance(x))
+							.Cast<ICodeGenerationPlugin>()
+							.ToArray();
+
+						var codeGeneratorConfig = new CodeGeneratorConfig();
+						codeGeneratorConfig.Configure(genesisConfig);
+						codeGeneratorConfig.AutoImportPlugins(allPluginInstances);
+
+						_logger.Verbose("Populated config with all defaults.");
+					}
+
+					// Write config to file.
+					var jsonContents = genesisConfig.ConvertToJson();
+					File.WriteAllText(configOptions.CreatePath, jsonContents);
+
+					_logger.Verbose("Config is written to {CreatePath}.", configOptions.CreatePath);
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.Error(ex, "An unexpected error occurred during code generation.");
+
+				result = 1;
+			}
+
+			return result;
+		}
+
+		private static int ExecuteCodeGeneration(GenerateOptions generateOptions)
+		{
+			var result = 0;
+			try
+			{
+				ConfigureLogger(isVerbose: generateOptions.IsVerbose);
 
 				// Load all plugin assemblies
-				using (var assemblyLoader = new AssemblyLoader(defaultOptions.PluginPath))
+				using (var assemblyLoader = new AssemblyLoader(generateOptions.PluginPath))
 				{
-					assemblyLoader.LoadAll(defaultOptions.PluginPath);
+					assemblyLoader.LoadAll(generateOptions.PluginPath);
 
 					_logger.Verbose($"Loaded {assemblyLoader.Count} plugins assemblies.");
 
@@ -41,11 +108,82 @@ namespace Genesis.CLI
 					{
 						_logger.Verbose($"Plugin loaded: {type.Name}");
 					}
+
+					// Add any configs from base64, file configs
+					var configs = new List<IGenesisConfig>();
+					if (generateOptions.HasConfigsAsBase64())
+					{
+						_logger.Verbose("Using Base64 Configs...");
+
+						foreach (var base64Config in generateOptions.ConfigsAsBase64)
+						{
+							configs.Add(base64Config.LoadGenesisConfigFromBase64());
+						}
+					}
+
+					if (generateOptions.HasFileConfigs())
+					{
+						_logger.Verbose("Using File Configs...");
+
+						foreach (var configFilePath in generateOptions.ConfigFilePaths)
+						{
+							if (File.Exists(configFilePath))
+							{
+								configs.Add(configFilePath.LoadGenesisConfigFromFile());
+							}
+							else
+							{
+								_logger.Warning("Could not find config file at {ConfigFilePath}.", configFilePath);
+							}
+						}
+					}
+
+					_logger.Verbose($"Loaded {configs.Count} GenesisConfigs.");
+					_logger.Verbose("Starting code generation.");
+
+					try
+					{
+						for (var i = 0; i < configs.Count; i++)
+						{
+							_logger.Verbose("Generating code from {ConfigName}.", configs[i].Name);
+
+							// Set the absolute project path per config
+							var targetDirectoryConfig = configs[i].CreateAndConfigure<TargetDirectoryConfig>();
+							var relativeOutputPath = targetDirectoryConfig.TargetDirectory;
+							var absoluteOutputPath =
+								Path.GetFullPath(Path.Combine(generateOptions.ProjectPath.Trim('"'), relativeOutputPath));
+							targetDirectoryConfig.TargetDirectory = absoluteOutputPath;
+
+							_logger.Verbose(
+								"Setting absolute output path to {OutputPath}.",
+								targetDirectoryConfig.TargetDirectory);
+
+							// Create a code-gen runner per config and execute.
+							var codeGenerator = CodeGeneratorTools.CodeGeneratorFromPreferences(configs[i]);
+							codeGenerator.OnProgress += (title, info, progress) =>
+							{
+								_logger.Verbose($"{title} {info} {$"{progress:P}"}%");
+							};
+
+							if (generateOptions.IsDryRun)
+							{
+								codeGenerator.DryRun();
+							}
+
+							codeGenerator.Generate();
+						}
+					}
+					catch (Exception ex)
+					{
+						_logger.Error(ex, "An unexpected error occured during code generation, stopping now...");
+
+						result = 1;
+					}
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				_logger.Error(e, "An unexpected error occurred during code generation.");
+				_logger.Error(ex, "An unexpected error occurred during code generation.");
 
 				result = 1;
 			}
@@ -57,7 +195,19 @@ namespace Genesis.CLI
 		{
 			foreach (var error in errors)
 			{
-				_logger.Error(error.ToString());
+				switch (error)
+				{
+					// Do nothing if these are the errors
+					case HelpRequestedError helpRequestedError:
+					case VersionRequestedError versionRequestedError:
+						// No-op
+						break;
+
+					// Otherwise log to the console.
+					default:
+						_logger.Error(error.ToString());
+						break;
+				}
 			}
 
 			return 1;

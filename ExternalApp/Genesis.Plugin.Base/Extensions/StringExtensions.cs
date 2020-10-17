@@ -110,25 +110,5 @@ namespace Genesis.Plugin
 		{
 			return value.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
 		}
-
-		public static string ToSafeDirectory(this string directory)
-		{
-			if (string.IsNullOrEmpty(directory) || directory == ".")
-			{
-				return "Generated";
-			}
-
-			if (directory.EndsWith("/", StringComparison.Ordinal))
-			{
-				directory = directory.Substring(0, directory.Length - 1);
-			}
-
-			if (!directory.EndsWith("/Generated", StringComparison.OrdinalIgnoreCase))
-			{
-				directory += "/Generated";
-			}
-
-			return directory;
-		}
 	}
 }

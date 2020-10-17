@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
-    <ProjectReference Include="..\Genesis.Plugin.Core.Attributes\Genesis.Plugin.Core.Attributes.csproj" />
+    <ProjectReference Include="..\Genesis.Plugin.Core.Common\Genesis.Plugin.Core.Common.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

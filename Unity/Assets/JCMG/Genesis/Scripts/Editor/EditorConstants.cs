@@ -33,33 +33,37 @@ namespace JCMG.Genesis.Editor
 		// Library Name
 		public const string SDK_NAME = "Genesis";
 
-		// Logging
+		// General Logging
 		public const string LOG_PREFIX = "[Genesis] ";
+		public const string CODE_GENERATION_UPDATE_ERROR = LOG_PREFIX + "An unexpected error occured. \n\n{0}";
+		public const string DOTNET_COMMAND_EXECUTION_FORMAT = LOG_PREFIX + "{0} {1}";
+
+		// Code Generation Logging
 		public const string STARTED_CODE_GENERATION = LOG_PREFIX + "Code generation started.";
 		public const string CODE_GENERATION_SUCCESS = LOG_PREFIX + "Code generation successful!";
 		public const string CODE_GENERATION_FAILURE = LOG_PREFIX + "Code generation failed, process exited with code {0}.";
-		public const string CODE_GENERATION_UPDATE = LOG_PREFIX + "[{0}] {1}";
-		public const string CODE_GENERATION_UPDATE_ERROR = LOG_PREFIX + "An unexpected error occured during code generation.";
+		public const string CODE_GENERATION_UPDATE = LOG_PREFIX + "{0}";
 		public const string CODE_GENERATION_UPDATE_ERROR_FORMAT =
 			LOG_PREFIX + "An unexpected error occured during code generation for GenesisSettings asset [{0}].";
-		public const string DOTNET_COMMAND_EXECUTION_FORMAT = LOG_PREFIX + "{0} {1}";
 
-		public const string COULD_NOT_FIND_DEFAULT_SETTINGS_SET =
-			"A single default Settings could not be found. Please update your GenesisSettings asset to mark one " +
-			"Settings as Default.";
-
-		public const string MULTIPLE_DEFAULT_SETTINGS_SET =
-			"Multiple Settings have been marked as default. Please update your GenesisSettings asset to mark only" +
-			" one Settings as default.";
+		// Config Generation Logging
+		public const string STARTED_CONFIG_GENERATION = LOG_PREFIX + "Config generation started.";
+		public const string CONFIG_GENERATION_SUCCESS = LOG_PREFIX + "Config generation successful!";
+		public const string CONFIG_GENERATION_FAILURE = LOG_PREFIX + "Config generation failed, process exited with code {0}.";
 
 		// Dotnet Core and Genesis Assemblies
 		public const string DOTNET_EXE = "dotnet";
-		public const string GENESIS_EXE = "Genesis.CLI.dll";
+		public const string GENESIS_EXECUTABLE = "Genesis.CLI.dll";
 
 		// General file and path
 		public const string DLL_EXTENSION = ".dll";
 		public const string BACKSLASH_STR = "\"";
 		public const string SPACE_STR = " ";
+		public const string QUOTE_STR = "\"";
+		public const string COMMA_STR = ",";
+
+		// Config files
+		public const string TEMP_CONFIG_FILE_PATH = "./unity_temp_config.json";
 
 		// Search filters
 		public const string WILDCARD_ALL_DLLS = "*.dll";

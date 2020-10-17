@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Genesis.Plugin.Core</RootNamespace>
+    <AssemblyName>Genesis.Plugin.Core.Common</AssemblyName>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Genesis.Unity.Common\Genesis.Common.csproj" />
+  </ItemGroup>
+
+</Project>

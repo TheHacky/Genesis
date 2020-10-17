@@ -35,3 +35,37 @@ MonoBehaviour:
     value: false
   - key: Genesis.WhiteListedAssemblies
     value: Assembly-CSharp, Assembly-CSharp-Editor
+  _genesisCLIInstallationFolder: 
+  _genesisConfig:
+    keyValuePairs:
+    - key: Genesis.SearchPaths
+      value: plugins
+    - key: Genesis.Plugins
+      value: Genesis.Plugin.Core
+    - key: Genesis.PreProcessors
+      value: 
+    - key: Genesis.DataProviders
+      value: 
+    - key: Genesis.CodeGenerators
+      value: 
+    - key: Genesis.PostProcessors
+      value: 
+    - key: Genesis.DoUseWhiteListedAssemblies
+      value: false
+    - key: Genesis.WhiteListedAssemblies
+      value: Assembly-CSharp, Assembly-CSharp-Editor
+    - key: Genesis.LineEndings
+      value: Unix
+    - key: Genesis.TargetDirectory
+      value: Assets/ExampleContent/Scripts/Generated
+    - key: Genesis.AllDataProviders
+      value: 
+    - key: Genesis.AllCodeGenerators
+      value: Genesis.Plugin.Core.ScriptableFactoryCodeGenerator
+    - key: Genesis.AllPostProcessors
+      value: Genesis.Plugin.Core.AddFileHeaderPostProcessor, Genesis.Plugin.Core.CleanTargetDirectoryPostProcessor,
+        Genesis.Plugin.Core.NewLinePostProcessor, Genesis.Plugin.Core.MergeFilesPostProcessor,
+        Genesis.Plugin.Core.WriteToDiskPostProcessor
+    - key: Genesis.AllPreProcessors
+      value: 
+    name: GenerateZeroCodeGenesisSettings
