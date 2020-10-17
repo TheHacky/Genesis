@@ -6,9 +6,9 @@ name: Unit Tests
 # events but only for the develop branch
 on:
   push:
-    branches: [ develop ]
+    branches: [ feat/v2 ]
   pull_request:
-    branches: [ develop ]
+    branches: [ feat/v2 ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -21,7 +21,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+        with:
+          ref: feat/v2
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x' # Latest 3.1 patch version
+      - run: dotnet build .\ExternalApp\Genesis\Genesis.sln
+      - run: dotnet test .\ExternalApp\Genesis\Genesis.sln --no-build --verbosity normal
       - uses: actions/cache@v1.1.0
         with:
           path: Unity/Library
