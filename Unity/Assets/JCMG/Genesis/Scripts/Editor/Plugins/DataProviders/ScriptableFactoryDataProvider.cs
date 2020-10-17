@@ -26,103 +26,104 @@ THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Genesis.Common;
 
 namespace JCMG.Genesis.Editor.Plugins
 {
-	internal sealed class ScriptableFactoryDataProvider : IDataProvider,
-														  IConfigurable
-	{
-		/// <summary>
-		/// The name of the plugin.
-		/// </summary>
-		public string Name => NAME;
+	//internal sealed class ScriptableFactoryDataProvider : IDataProvider,
+	//													  IConfigurable
+	//{
+	//	/// <summary>
+	//	/// The name of the plugin.
+	//	/// </summary>
+	//	public string Name => NAME;
 
-		/// <summary>
-		/// The priority value this plugin should be given to execute with regards to other plugins,
-		/// ordered by ASC value.
-		/// </summary>
-		public int Priority => 0;
+	//	/// <summary>
+	//	/// The priority value this plugin should be given to execute with regards to other plugins,
+	//	/// ordered by ASC value.
+	//	/// </summary>
+	//	public int Priority => 0;
 
-		/// <summary>
-		/// Returns true if this plugin should be executed in Dry Run Mode, otherwise false.
-		/// </summary>
-		public bool RunInDryMode => true;
+	//	/// <summary>
+	//	/// Returns true if this plugin should be executed in Dry Run Mode, otherwise false.
+	//	/// </summary>
+	//	public bool RunInDryMode => true;
 
-		private AssembliesConfig _assembliesConfig;
+	//	private AssembliesConfig _assembliesConfig;
 
-		private const string NAME = "Scriptable Factory Data";
+	//	private const string NAME = "Scriptable Factory Data";
 
-		/// <summary>
-		/// Creates zero or more <see cref="CodeGeneratorData"/> derived instances for code generation to execute upon.
-		/// </summary>
-		/// <returns></returns>
-		public CodeGeneratorData[] GetData()
-		{
-			// If we are only searching specific assemblies use that whitelist, otherwise get all loaded assemblies.
-			var assemblies = _assembliesConfig.DoUseWhitelistOfAssemblies
-				? ReflectionTools.GetAvailableAssemblies(_assembliesConfig.WhiteListedAssemblies)
-				: ReflectionTools.GetAvailableAssemblies();
+	//	/// <summary>
+	//	/// Creates zero or more <see cref="CodeGeneratorData"/> derived instances for code generation to execute upon.
+	//	/// </summary>
+	//	/// <returns></returns>
+	//	public CodeGeneratorData[] GetData()
+	//	{
+	//		// If we are only searching specific assemblies use that whitelist, otherwise get all loaded assemblies.
+	//		var assemblies = _assembliesConfig.DoUseWhitelistOfAssemblies
+	//			? ReflectionTools.GetAvailableAssemblies(_assembliesConfig.WhiteListedAssemblies)
+	//			: ReflectionTools.GetAvailableAssemblies();
 
-			var types = assemblies
-				.SelectMany(x => x.GetTypes()).ToArray();
+	//		var types = assemblies
+	//			.SelectMany(x => x.GetTypes()).ToArray();
 
-			var codeGenData = new List<CodeGeneratorData>();
-			codeGenData.AddRange(GetFactoryCodeGeneratorData(types));
-			codeGenData.AddRange(GetFactoryEnumCodeGeneratorData(types));
+	//		var codeGenData = new List<CodeGeneratorData>();
+	//		codeGenData.AddRange(GetFactoryCodeGeneratorData(types));
+	//		codeGenData.AddRange(GetFactoryEnumCodeGeneratorData(types));
 
-			return codeGenData.ToArray();
-		}
+	//		return codeGenData.ToArray();
+	//	}
 
-		private IEnumerable<CodeGeneratorData> GetFactoryCodeGeneratorData(IEnumerable<Type> types)
-		{
-			return types
-				.Where(
-					x => x.GetCustomAttributes(typeof(FactoryKeyForAttribute), false).Length > 0)
-				.SelectMany(
-					y =>
-					{
-						var attrData = (FactoryKeyForAttribute[])y.GetCustomAttributes(
-							typeof(FactoryKeyForAttribute),
-							false);
+	//	private IEnumerable<CodeGeneratorData> GetFactoryCodeGeneratorData(IEnumerable<Type> types)
+	//	{
+	//		return types
+	//			.Where(
+	//				x => x.GetCustomAttributes(typeof(FactoryKeyForAttribute), false).Length > 0)
+	//			.SelectMany(
+	//				y =>
+	//				{
+	//					var attrData = (FactoryKeyForAttribute[])y.GetCustomAttributes(
+	//						typeof(FactoryKeyForAttribute),
+	//						false);
 
-						return attrData.Select(
-							z =>
-							{
-								var data = new FactoryKeyData(y, z.ValueType);
-								return data;
-							});
-					});
-		}
+	//					return attrData.Select(
+	//						z =>
+	//						{
+	//							var data = new FactoryKeyData(y, z.ValueType);
+	//							return data;
+	//						});
+	//				});
+	//	}
 
-		private IEnumerable<CodeGeneratorData> GetFactoryEnumCodeGeneratorData(IEnumerable<Type> types)
-		{
-			return types
-				.Where(
-					x => x.IsEnum &&
-					     x.GetCustomAttributes(typeof(FactoryKeyEnumForAttribute), false).Length > 0)
-				.SelectMany(
-					y =>
-					{
-						var attrData = (FactoryKeyEnumForAttribute[])y.GetCustomAttributes(
-							typeof(FactoryKeyEnumForAttribute),
-							false);
+	//	private IEnumerable<CodeGeneratorData> GetFactoryEnumCodeGeneratorData(IEnumerable<Type> types)
+	//	{
+	//		return types
+	//			.Where(
+	//				x => x.IsEnum &&
+	//				     x.GetCustomAttributes(typeof(FactoryKeyEnumForAttribute), false).Length > 0)
+	//			.SelectMany(
+	//				y =>
+	//				{
+	//					var attrData = (FactoryKeyEnumForAttribute[])y.GetCustomAttributes(
+	//						typeof(FactoryKeyEnumForAttribute),
+	//						false);
 
-						return attrData.Select(
-							z =>
-							{
-								var data = new FactoryKeyEnumData(y, z.ValueType);
-								return data;
-							});
-					});
-		}
+	//					return attrData.Select(
+	//						z =>
+	//						{
+	//							var data = new FactoryKeyEnumData(y, z.ValueType);
+	//							return data;
+	//						});
+	//				});
+	//	}
 
-		/// <summary>
-		/// Configures preferences
-		/// </summary>
-		/// <param name="settings"></param>
-		public void Configure(GenesisSettings settings)
-		{
-			_assembliesConfig = settings.CreateAndConfigure<AssembliesConfig>();
-		}
-	}
+	//	/// <summary>
+	//	/// Configures preferences
+	//	/// </summary>
+	//	/// <param name="settings"></param>
+	//	public void Configure(IGenesisConfig settings)
+	//	{
+	//		_assembliesConfig = settings.CreateAndConfigure<AssembliesConfig>();
+	//	}
+	//}
 }

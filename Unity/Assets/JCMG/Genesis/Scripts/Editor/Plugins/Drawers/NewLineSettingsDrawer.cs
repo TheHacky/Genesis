@@ -23,6 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+using Genesis.Plugin.Core;
+
 namespace JCMG.Genesis.Editor.Plugins
 {
 	internal sealed class NewLineSettingsDrawer : AbstractSettingsDrawer

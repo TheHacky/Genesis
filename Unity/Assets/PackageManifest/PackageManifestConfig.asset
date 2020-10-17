@@ -30,7 +30,9 @@ MonoBehaviour:
   - Genesis
   - Code
   - Gen
-  dependencies: []
+  dependencies:
+  - packageName: com.unity.settings-manager
+    packageVersion: 1.0.3
   versionConstantsPath: Assets/JCMG/Genesis/Scripts/Editor
   versionConstantsNamespace: JCMG.Genesis.Editor
   _id: 66f64dad-4bda-4f2e-b960-22b7974f8604

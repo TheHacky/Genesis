@@ -19,7 +19,7 @@ namespace Genesis.Plugin
 			_fieldInfo = info;
 			type = _fieldInfo.FieldType;
 			name = _fieldInfo.Name;
-			attributes = getAttributes(_fieldInfo.GetCustomAttributes(false));
+			attributes = GetAttributes(_fieldInfo.GetCustomAttributes(false));
 		}
 
 		public PublicMemberInfo(PropertyInfo info)
@@ -27,7 +27,7 @@ namespace Genesis.Plugin
 			_propertyInfo = info;
 			type = _propertyInfo.PropertyType;
 			name = _propertyInfo.Name;
-			attributes = getAttributes(_propertyInfo.GetCustomAttributes(false));
+			attributes = GetAttributes(_propertyInfo.GetCustomAttributes(false));
 		}
 
 		public PublicMemberInfo(Type type, string name, AttributeInfo[] attributes = null)
@@ -54,7 +54,7 @@ namespace Genesis.Plugin
 			}
 		}
 
-		private static AttributeInfo[] getAttributes(object[] attributes)
+		private static AttributeInfo[] GetAttributes(object[] attributes)
 		{
 			var attributeInfoArray = new AttributeInfo[attributes.Length];
 			for (var index = 0; index < attributes.Length; ++index)

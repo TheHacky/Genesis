@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
+    <ProjectReference Include="..\Genesis.Unity.Common\Genesis.Common.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

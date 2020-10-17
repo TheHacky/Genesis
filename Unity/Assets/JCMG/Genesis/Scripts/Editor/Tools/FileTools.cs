@@ -24,8 +24,11 @@ THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace JCMG.Genesis.Editor
 {
@@ -37,9 +40,6 @@ namespace JCMG.Genesis.Editor
 		/// <summary>
 		/// Converts <paramref name="fullFilePath"/> into a relative file path from <paramref name="referencePath"/>.
 		/// </summary>
-		/// <param name="fullFilePath"></param>
-		/// <param name="referencePath"></param>
-		/// <returns></returns>
 		public static string ConvertToRelativePath(string fullFilePath, string referencePath)
 		{
 			var fileUri = new Uri(fullFilePath);
@@ -48,48 +48,60 @@ namespace JCMG.Genesis.Editor
 		}
 
 		/// <summary>
-		/// Returns true if the <paramref name="path"/> is for a file, otherwise false.
+		/// Returns an absolute path to the Unity Project folder.
 		/// </summary>
-		/// <param name="path"></param>
-		/// <returns></returns>
-		private static bool IsFile(string path)
+		public static string GetProjectPath()
 		{
-			var attr = File.GetAttributes(path);
-			return (attr & FileAttributes.Directory) != FileAttributes.Directory;
+			const string ASSETS_FOLDER_NAME = "Assets";
+			return Path.GetFullPath(Application.dataPath.Replace(ASSETS_FOLDER_NAME, string.Empty));
 		}
 
 		/// <summary>
-		/// Recursively deletes all sub-folders (excluding hidden folders) and files in <see cref="DirectoryInfo"/>
-		/// <paramref name="directoryInfo"/>.
+		/// Returns the absolute paths to all assemblies in the Unity Project whether in the Assets folder or packages.
 		/// </summary>
-		/// <param name="directoryInfo"></param>
-		private static void RecursivelyDeleteDirectoryContents(DirectoryInfo directoryInfo)
+		public static string[] GetAssemblyPaths()
 		{
-			var subDirectoryInfo = directoryInfo.GetDirectories("*");
-			foreach (var sdi in subDirectoryInfo)
-			{
-				if ((sdi.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-				{
-					sdi.Delete(true);
-				}
-			}
+			var assemblyPathsList = new List<string>();
+			assemblyPathsList.AddRange(GetPackageAssembliesPath());
+			assemblyPathsList.AddRange(GetAssetPathsWithDLLs());
 
-			var fileInfo = directoryInfo.GetFiles("*");
-			foreach (var fi in fileInfo)
-			{
-				fi.Delete();
-			}
+			const string RUNTIME_ASSEMBLIES_PATH = @"Managed\UnityEngine";
+			assemblyPathsList.Add(
+				Path.GetFullPath(Path.Combine(EditorApplication.applicationContentsPath, RUNTIME_ASSEMBLIES_PATH)));
+
+			const string LIBRARY_SCRIPT_ASSEMBLIES_PATH = @"Library\ScriptAssemblies";
+			assemblyPathsList.Add(Path.GetFullPath(Path.Combine(GetProjectPath(), LIBRARY_SCRIPT_ASSEMBLIES_PATH)));
+
+			return assemblyPathsList.Distinct().ToArray();
 		}
 
-		public static bool ContainsFile(DirectoryInfo directoryInfo, string absoluteFilePath)
+		/// <summary>
+		/// Returns the absolute folder paths to all assemblies in packages referenced by this project.
+		/// </summary>
+		public static string[] GetPackageAssembliesPath()
 		{
-			var file = Directory.GetFiles(
-					directoryInfo.FullName,
-					absoluteFilePath,
-					SearchOption.AllDirectories)
-				.FirstOrDefault();
+			const string ROOT_PACKAGES_PATH = @"Library\PackageCache\";
 
-			return file != null;
+			var fullLibraryPath = Path.Combine(GetProjectPath(), ROOT_PACKAGES_PATH);
+			var dllPaths = FindAllDLLs(fullLibraryPath);
+			return dllPaths.Select(x => new FileInfo(x)).Select(y => y.Directory.FullName).Distinct().ToArray();
+		}
+
+		/// <summary>
+		/// Returns the absolute folder paths to all assemblies in the Assets folder.
+		/// </summary>
+		public static string[] GetAssetPathsWithDLLs()
+		{
+			var dllPaths = FindAllDLLs(Application.dataPath);
+			return dllPaths.Select(x => new FileInfo(x)).Select(y => y.Directory.FullName).Distinct().ToArray();
+		}
+
+		/// <summary>
+		/// Recursively searches for all assemblies in <paramref name="rootPath"/> and subfolders.
+		/// </summary>
+		private static string[] FindAllDLLs(string rootPath)
+		{
+			return Directory.GetFiles(rootPath, EditorConstants.WILDCARD_ALL_DLLS, SearchOption.AllDirectories);
 		}
 	}
 }

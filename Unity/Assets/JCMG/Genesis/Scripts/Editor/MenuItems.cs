@@ -66,15 +66,10 @@ namespace JCMG.Genesis.Editor
 
 		#region Window Menu Items
 
-		internal static void ExecuteGenesisCodeGeneration()
-		{
-			UnityCodeGenerator.GenerateAll();
-		}
-
 		[MenuItem(GENERATE_CODE_MENU_ITEM, priority = GENERATE_CODE_PRIORITY)]
 		public static void RunCodeGeneration()
 		{
-			GenesisCLIRunner.Run();
+			GenesisCLIRunner.RunCodeGeneration();
 		}
 
 		[MenuItem(BUG_OR_FEATURE_REQUEST_MENU_ITEM, priority = BUG_OR_FEATURE_REQUEST_PRIORITY)]
@@ -125,7 +120,8 @@ namespace JCMG.Genesis.Editor
 					})
 				.ToArray();
 
-			UnityCodeGenerator.GenerateMultiple(settingsData);
+			// TODO Rewrite to use external CLI
+			//UnityCodeGenerator.GenerateMultiple(settingsData);
 		}
 
 		[MenuItem(GENESIS_SETTINGS_GENERATE_CODE_MENU_ITEM, isValidateFunction:true)]

@@ -152,7 +152,7 @@ namespace Genesis.Plugin
 				result += ">";
 			}
 
-			return result;
+			return result.Replace('+', '.');
 		}
 	}
 }
