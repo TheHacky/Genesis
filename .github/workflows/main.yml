@@ -24,10 +24,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: develop
+          fetch-depth: 0
       # Check out the v2 branch so we can test our new .Net Core workflows
       - uses: actions/checkout@v2
         with:
-          ref: feat/v2      
+          ref: feat/v2  
+          fetch-depth: 0
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
