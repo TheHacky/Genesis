@@ -20,9 +20,14 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Always check out develop so our GitVersion task will complete when building the external solution
       - uses: actions/checkout@v2
         with:
-          ref: feat/v2
+          ref: develop
+      # Check out the v2 branch so we can test our new .Net Core workflows
+      - uses: actions/checkout@v2
+        with:
+          ref: feat/v2      
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
