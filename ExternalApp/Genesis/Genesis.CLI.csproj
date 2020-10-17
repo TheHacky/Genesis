@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.exe $(SolutionDir)..\..\Publish\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Publish\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Publish\ /Y" />
+    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.exe $(ProjectDir)..\..\..\Publish\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Publish\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Publish\ /Y" />
   </Target>
 
 </Project>

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Publish\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Publish\Plugins\ /Y" />
+    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Publish\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Publish\Plugins\ /Y" />
   </Target>
 
 </Project>

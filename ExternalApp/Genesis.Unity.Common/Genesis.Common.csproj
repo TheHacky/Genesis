@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(SolutionDir)..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(SolutionDir)..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y" />
+    <Exec Command="xcopy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y" />
   </Target>
 
 </Project>
