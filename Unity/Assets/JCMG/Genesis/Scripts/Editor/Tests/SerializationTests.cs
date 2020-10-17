@@ -28,7 +28,7 @@ namespace JCMG.Genesis.Editor.Tests
 			const string EXPECTED_JSON =
 				"{\"keyValuePairs\":[{\"key\":\"one\",\"value\":\"1\"}," +
 				"{\"key\":\"two\",\"value\":\"2\"}," +
-				"{\"key\":\"three\",\"value\":\"3\"}]}";
+				"{\"key\":\"three\",\"value\":\"3\"}],\"name\":\"DefaultGenesisConfig\"}";
 
 			Assert.AreEqual(EXPECTED_JSON, json);
 
