@@ -1,16 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
-    <ProjectReference Include="..\Genesis.Plugin.Core.Common\Genesis.Plugin.Core.Common.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
+		<ProjectReference Include="..\Genesis.Plugin.Core.Common\Genesis.Plugin.Core.Common.csproj" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Publish\Plugins\ /Y&#xD;&#xA;copy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Publish\Plugins\ /Y" />
-  </Target>
+	<Target Name="CopyBuildArtifacts" AfterTargets="Build">
+		<ItemGroup>
+			<DataFiles Include="$(ProjectDir)$(OutDir)\*.dll;$(ProjectDir)$(OutDir)\*.pdb" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(DataFiles)"
+		      DestinationFolder="$(ProjectDir)..\..\Publish\Plugins"
+		      SkipUnchangedFiles="false"/>
+	</Target>
 
 </Project>

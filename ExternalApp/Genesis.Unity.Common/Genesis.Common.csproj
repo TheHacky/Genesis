@@ -1,13 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Genesis.Common</AssemblyName>
-    <RootNamespace>Genesis.Common</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>Genesis.Common</AssemblyName>
+		<RootNamespace>Genesis.Common</RootNamespace>
+	</PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y&#xD;&#xA;copy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Unity\Assets\JCMG\Genesis\Plugins\ /Y" />
-  </Target>
+
+	<Target Name="CopyBuildArtifacts" AfterTargets="Build">
+		<Copy SourceFiles="$(ProjectDir)$(OutDir)$(ProjectName).dll;$(ProjectDir)$(OutDir)$(ProjectName).pdb"
+		      DestinationFolder="$(ProjectDir)..\..\Unity\Assets\JCMG\Genesis\Plugins\"
+		      SkipUnchangedFiles="false" />
+	</Target>
 
 </Project>

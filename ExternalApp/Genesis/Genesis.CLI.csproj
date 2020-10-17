@@ -1,32 +1,38 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>Genesis.CLI</AssemblyName>
-    <RootNamespace>Genesis.CLI</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AssemblyName>Genesis.CLI</AssemblyName>
+		<RootNamespace>Genesis.CLI</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="GitVersionTask" Version="5.3.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="4.7.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="GitVersionTask" Version="5.3.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Serilog" Version="2.10.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+		<PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+		<PackageReference Include="System.Reflection.MetadataLoadContext" Version="4.7.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
-    <ProjectReference Include="..\Genesis.Unity.Common\Genesis.Common.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Genesis.Plugin.Base\Genesis.Plugin.Base.csproj" />
+		<ProjectReference Include="..\Genesis.Unity.Common\Genesis.Common.csproj" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(ProjectDir)$(OutDir)*.exe $(ProjectDir)..\..\..\Publish\ /Y&#xD;&#xA;copy $(ProjectDir)$(OutDir)*.dll $(ProjectDir)..\..\..\Publish\ /Y&#xD;&#xA;copy $(ProjectDir)$(OutDir)*.pdb $(ProjectDir)..\..\..\Publish\ /Y" />
-  </Target>
+	<Target Name="CopyBuildArtifacts" AfterTargets="Build">
+		<ItemGroup>
+			<DataFiles Include="$(ProjectDir)$(OutDir)\*.exe;$(ProjectDir)$(OutDir)\*.dll;$(ProjectDir)$(OutDir)\*.pdb" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(DataFiles)"
+		      DestinationFolder="$(ProjectDir)..\..\Publish"
+		      SkipUnchangedFiles="false" />
+	</Target>
 
 </Project>
