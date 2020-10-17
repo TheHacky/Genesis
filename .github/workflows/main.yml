@@ -21,6 +21,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       # Always check out develop so our GitVersion task will complete when building the external solution
+      # and ensure fetch-depth is zero to avoid errors with GitVersion
       - uses: actions/checkout@v2
         with:
           ref: develop
@@ -30,31 +31,37 @@ jobs:
         with:
           ref: feat/v2  
           fetch-depth: 0
+          
+      # Build CLI app and run unit tests for Genesis.CLI .Net Core App
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x' # Latest 3.1 patch version
-      - run: dotnet build ".\ExternalApp\Genesis\Genesis.sln"
-      - run: dotnet test ".\ExternalApp\Genesis\Genesis.sln" --no-build --verbosity normal
-      - uses: actions/cache@v1.1.0
+      - name: Build Genesis.CLI .Net Core Console App
+        run: dotnet build ".\ExternalApp\Genesis\Genesis.sln"
+      - name: Run .Net Core Unit Tests
+        run: dotnet test ".\ExternalApp\Genesis\Genesis.sln" --no-build --verbosity normal
+                 
+      # Retrieve cache for Unity project, execute unit tests, and upload cache
+      - name: Retrieve Unity Library Cache
+        uses: actions/cache@v1.1.0
         with:
           path: Unity/Library
           key: Library-Genesis-Windows
           restore-keys: |
             Library-Genesis-
             Library-
-            
-      # Runs a single command using the runners shell
-      - uses: webbertakken/unity-test-runner@v1.4
+      - name: Run Unity Unit Tests
+        uses: webbertakken/unity-test-runner@v1.4
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: Unity
-          unityVersion: 2019.4.8f1
-                      
-      - uses: actions/upload-artifact@v1
+          unityVersion: 2019.4.8f1                      
+      - name: Upload Unit Test Results
+        uses: actions/upload-artifact@v1
         with:
           name: Test results
           path: artifacts
